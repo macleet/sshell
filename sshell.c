@@ -65,10 +65,8 @@ int main(void)
                         break;
                 }
 
-                //printf("here %c\n", cmd[0]);
                 /* Regular command */
                 sys(cmd);
-                
         }
 
         return EXIT_SUCCESS;
