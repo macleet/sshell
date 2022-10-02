@@ -41,8 +41,7 @@ int main(void)
 
                 /* Regular command */
                 retval = system(cmd);
-                fprintf(stdout, "Return status value for '%s': %d\n",
-                        cmd, retval);
+                fprintf(stdout, "Return status value for '%s': %d\n", cmd, retval);
         }
 
         return EXIT_SUCCESS;
