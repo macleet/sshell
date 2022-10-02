@@ -1,9 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define CMDLINE_MAX 512
+
+int sys(char* cmd){
+        pid_t pid;
+        char *args[] = {NULL};
+
+        pid = fork();
+        if (pid == 0) {
+                /* Child */
+                execvp(cmd, args);
+                perror("execvp");
+                exit(1);
+        } else if (pid > 0) {
+                /* Parent */
+                int status;
+                waitpid(pid, &status, 0);
+                //printf("%d\n", WEXITSTATUS(status)); 
+                fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));
+        } else {
+                perror("fork");
+                exit(1);
+        }
+        
+        return 0;
+}
 
 int main(void)
 {
@@ -11,7 +36,7 @@ int main(void)
 
         while (1) {
                 char *nl;
-                int retval;
+                //int retval;
 
                 /* Print prompt */
                 printf("sshell$ ");
@@ -35,14 +60,15 @@ int main(void)
 
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
+                        
                         fprintf(stderr, "Bye...\n");
                         break;
                 }
 
+                //printf("here %c\n", cmd[0]);
                 /* Regular command */
-                retval = system(cmd);
-                fprintf(stdout, "Return status value for '%s': %d\n",
-                        cmd, retval);
+                sys(cmd);
+                
         }
 
         return EXIT_SUCCESS;
