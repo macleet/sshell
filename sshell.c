@@ -25,7 +25,6 @@ int sys(char* cmd){
                 perror("fork");
                 exit(1);
         }
-        
         return 0;
 }
 
@@ -53,12 +52,12 @@ int main(void)
 
                 /* Remove trailing newline from command line */
                 nl = strchr(cmd, '\n');
-                if (nl)
+                if (nl) {
                         *nl = '\0';
+                }
 
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
-                        
                         fprintf(stderr, "Bye...\n");
                         break;
                 }
