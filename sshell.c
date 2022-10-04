@@ -44,7 +44,7 @@ char* parse(cmd){
     for(int i = 0; i < sizeof(parsed_array); i++){
         printf("%s\n", parsed_array[i]);
     }*/
-    //Parsed_array is successfully made.
+    //Parsed_array is successfully made
     
     
     return parsed_array; //seg_fault
