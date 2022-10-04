@@ -57,8 +57,8 @@ char* parse(cmd){
 int main(void)
 {
         char cmd[CMDLINE_MAX];
-        char new_cmd = parse(cmd);
-        printf("%s\n", new_cmd);
+        //char new_cmd = parse(cmd);
+        //printf("%s\n", new_cmd);
 
         while (1) {
                 char *nl;
