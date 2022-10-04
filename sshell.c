@@ -20,7 +20,6 @@ int sys(char* cmd){
                 /* Parent */
                 int status;
                 waitpid(pid, &status, 0);
-                //printf("%d\n", WEXITSTATUS(status)); 
                 fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));  // Q: why WEXITSTATUS evaluation rather than directly giving status int value??
         } else {
                 perror("fork");
@@ -36,7 +35,6 @@ int main(void)
 
         while (1) {
                 char *nl;
-                //int retval;
 
                 /* Print prompt */
                 printf("sshell$ ");
