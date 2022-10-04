@@ -8,7 +8,7 @@
 
 int sys(char* cmd){
         pid_t pid;
-        char *args[] = {NULL};
+        char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no arguments)
 
         pid = fork();
         if (pid == 0) {
@@ -21,7 +21,7 @@ int sys(char* cmd){
                 int status;
                 waitpid(pid, &status, 0);
                 //printf("%d\n", WEXITSTATUS(status)); 
-                fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));
+                fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));  // Q: why WEXITSTATUS evaluation rather than directly giving status int value??
         } else {
                 perror("fork");
                 exit(1);
