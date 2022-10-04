@@ -13,7 +13,7 @@ typedef struct CmdLine {
 
 int sys(char* cmd) {
 	pid_t pid;
-	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no argu
+	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no arguments)
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
