@@ -6,6 +6,11 @@
 
 #define CMDLINE_MAX 512
 
+typedef struct CmdLine {
+	char *name;
+	char *options[CMDLINE_MAX];
+} CmdLine;
+
 int sys(char* cmd) {
 	pid_t pid;
 	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no argu
