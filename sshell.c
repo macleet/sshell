@@ -32,8 +32,35 @@ int sys(char* cmd) {
 	return 0;
 }
 
+char* parse(cmd){
+    //char cmd[] = "echo hello world"; 
+    char space[] = " ";
+    char *ptr = strtok(cmd, space);
+    char *parsed_array[3]; //temporarily set the size of array to 3
+    int i = 0;
+
+    while(ptr != NULL){
+        parsed_array[i] = ptr;
+        ptr = strtok(NULL, space);
+        i++;
+    }
+
+    /*printf("here\n");  
+    for(int i = 0; i < sizeof(parsed_array); i++){
+        printf("%s\n", parsed_array[i]);
+    }*/
+    //Parsed_array is successfully made
+    
+    
+    return parsed_array; //seg_fault
+}
+
+
 int main(void)
 {
+        char cmd[CMDLINE_MAX];
+        //char new_cmd = parse(cmd);
+        //printf("%s\n", new_cmd);
 	char cmd[CMDLINE_MAX];
 
 	while (1) {
