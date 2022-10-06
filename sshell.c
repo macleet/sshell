@@ -5,6 +5,8 @@
 #include <unistd.h>
 
 #define CMDLINE_MAX 512
+#define TOKEN_MAX   32
+#define ARGS_MAX    16
 
 typedef struct CmdLine {
 	char *name;
