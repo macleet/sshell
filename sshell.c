@@ -34,7 +34,7 @@ int sys(char* cmd) {
 
 int main(void)
 {
-	char cmd[CMDLINE_MAX];
+    char cmd[CMDLINE_MAX];
 
 	while (1) {
 		char *nl;
