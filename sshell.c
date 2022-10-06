@@ -24,7 +24,7 @@ int sys(char* cmd) {
 		/* Parent */
 		int status;
 		waitpid(pid, &status, 0);
-		fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));  // Q: why WEXITSTATUS evaluation rather than directly giving status int value??
+		fprintf(stdout, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
 	} else {
 		perror("fork");
 		exit(1);
