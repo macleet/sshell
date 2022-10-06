@@ -31,7 +31,7 @@ int sys(char* cmdtxt) {
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
-		execvp(cmd, args);
+		execvp(cmd->name, cmd->args);
 		perror("execvp");
 		exit(1);
 	} else if (pid > 0) {
