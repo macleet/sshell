@@ -69,6 +69,5 @@ int main(void)
 		/* Regular command */
 		sys(cmd);
 	}
-
 	return EXIT_SUCCESS;
 }
