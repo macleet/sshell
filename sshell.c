@@ -8,7 +8,7 @@
 
 typedef struct CmdLine {
 	char *name;
-	char *options[CMDLINE_MAX];
+	char *args[TOKEN_MAX];
 } CmdLine;
 
 int sys(char* cmd) {
