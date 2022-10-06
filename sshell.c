@@ -5,30 +5,45 @@
 #include <unistd.h>
 
 #define CMDLINE_MAX 512
+#define TOKEN_MAX   32
+#define ARGS_MAX    16
 
 typedef struct CmdLine {
 	char *name;
-	char *options[CMDLINE_MAX];
+	char *args[TOKEN_MAX];
 } CmdLine;
 
-int sys(char* cmd) {
+void parse(CmdLine *cmd, char *cmdtxt) {
+	char *buffer = strtok(cmdtxt, " ");
+	for(int i = 0; buffer != NULL; i++) {
+		if(i == 0) { cmd->name = buffer; }
+		cmd->args[i] = buffer;
+		buffer = strtok(NULL, " ");
+	}
+	return;
+}
+
+int sys(char* cmdtxt) {
 	pid_t pid;
-	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no arguments)
+	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
+
+	parse(cmd, cmdtxt);
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
-		execvp(cmd, args);
+		execvp(cmd->name, cmd->args);
 		perror("execvp");
 		exit(1);
 	} else if (pid > 0) {
 		/* Parent */
 		int status;
 		waitpid(pid, &status, 0);
-		fprintf(stdout, "Return status value for '%s': %d\n", cmd, WEXITSTATUS(status));  // Q: why WEXITSTATUS evaluation rather than directly giving status int value??
+		fprintf(stdout, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
 	} else {
 		perror("fork");
 		exit(1);
 	}
+	free(cmd);
 	return 0;
 }
 
@@ -69,6 +84,5 @@ int main(void)
 		/* Regular command */
 		sys(cmd);
 	}
-
 	return EXIT_SUCCESS;
 }
