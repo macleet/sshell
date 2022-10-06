@@ -13,7 +13,6 @@ typedef struct CmdLine {
 	char *args[TOKEN_MAX];
 } CmdLine;
 
-int sys(char* cmd) {
 void parse(CmdLine *cmd, char *cmdtxt) {
 	char *buffer = strtok(cmdtxt, " ");
 	for(int i = 0; buffer != NULL; i++) {
@@ -24,6 +23,7 @@ void parse(CmdLine *cmd, char *cmdtxt) {
 	return;
 }
 
+int sys(char* cmdtxt) {
 	pid_t pid;
 	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
 
