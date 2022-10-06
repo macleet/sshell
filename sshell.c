@@ -25,7 +25,9 @@ void parse(CmdLine *cmd, char *cmdtxt) {
 }
 
 	pid_t pid;
-	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no arguments)
+	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
+
+	parse(cmd, cmdtxt);
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
