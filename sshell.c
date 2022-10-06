@@ -14,6 +14,16 @@ typedef struct CmdLine {
 } CmdLine;
 
 int sys(char* cmd) {
+void parse(CmdLine *cmd, char *cmdtxt) {
+	char *buffer = strtok(cmdtxt, " ");
+	for(int i = 0; buffer != NULL; i++) {
+		if(i == 0) { cmd->name = buffer; }
+		cmd->args[i] = buffer;
+		buffer = strtok(NULL, " ");
+	}
+	return;
+}
+
 	pid_t pid;
 	char *args[] = {NULL};  // Arg set to NULL for now : Phase 1 (no arguments)
 	pid = fork();
