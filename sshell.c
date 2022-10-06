@@ -43,6 +43,7 @@ int sys(char* cmdtxt) {
 		perror("fork");
 		exit(1);
 	}
+	free(cmd);
 	return 0;
 }
 
