@@ -98,7 +98,7 @@ int main(void)
 		if(builtinCmds(cmd) == 1) break;  // returns 1 on exit cmd
 		else continue;					  // else cmd is pwd or cd
 
-		/* Regular command */
+		/* Regular commands */
 		sys(cmd);
 	}
 	return EXIT_SUCCESS;
