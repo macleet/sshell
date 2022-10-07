@@ -75,8 +75,6 @@ int main(void)
     char cmd[CMDLINE_MAX];
 
 	while (1) {
-		char *nl;
-
 		/* Print prompt */
 		printf("sshell$ ");
 		fflush(stdout);
@@ -93,10 +91,8 @@ int main(void)
 		}
 
 		/* Remove trailing newline from command line */
-		nl = strchr(cmd, '\n');
-		if (nl) {
-			*nl = '\0';
-		}
+		char *nl = strchr(cmd, '\n');
+		if (nl) { *nl = '\0'; }
 
 		/* Builtin command */
 		if (!strcmp(cmd, "exit")) {
