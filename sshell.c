@@ -13,12 +13,13 @@ typedef struct CmdLine {
 	char *args[TOKEN_MAX];
 } CmdLine;
 
+/* Parses text given in command line */
 void parse(CmdLine *cmd, char *cmdtxt) {
-	char *buffer = strtok(cmdtxt, " ");
-	for(int i = 0; buffer != NULL; i++) {
-		if(i == 0) { cmd->name = buffer; }
-		cmd->args[i] = buffer;
-		buffer = strtok(NULL, " ");
+	char *arg_buf = strtok(cmdtxt, " ");
+	for(int i = 0; arg_buf != NULL; i++) {
+		if(i == 0) { cmd->name = arg_buf; }
+		cmd->args[i] = arg_buf;
+		arg_buf = strtok(NULL, " ");
 	}
 	return;
 }
