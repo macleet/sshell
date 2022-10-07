@@ -60,7 +60,8 @@ int sys(char* cmdtxt) {
 		/* Parent */
 		int status;
 		waitpid(pid, &status, 0);
-		fprintf(stdout, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
+		fprintf(stderr, "+ completed '%s' [%d]", cmdtxt, WEXITSTATUS(status));
+		// fprintf(stderr, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
 	} else {
 		perror("fork");
 		exit(1);
