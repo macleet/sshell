@@ -24,6 +24,27 @@ void parse(CmdLine *cmd, char *cmdtxt) {
 	return;
 }
 
+/* Built-in Commands: exit, pwd, cd */
+int builtinCmds(char *cmd) {
+	if (!strcmp(cmd, "exit")) {
+		fprintf(stderr, "Bye...\n");
+		return 1;
+	}
+	else {
+		char cwd[CMDLINE_MAX] = getcwd(cwd, sizeof(cwd));
+		if (!strcmp(cmd, "pwd")) {
+			if(cwd != NULL) {
+				fprintf(stdout, "%s\n", cwd);
+				fprintf(stderr, "+ completed '%s' [0]\n", cmd);
+			}
+		}
+		else if (!strcmp(cmd, "cd")) {
+			
+		}
+	}
+	return 0;
+}
+
 int sys(char* cmdtxt) {
 	pid_t pid;
 	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
