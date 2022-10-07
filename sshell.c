@@ -94,11 +94,9 @@ int main(void)
 		char *nl = strchr(cmd, '\n');
 		if (nl) { *nl = '\0'; }
 
-		/* Builtin command */
-		if (!strcmp(cmd, "exit")) {
-			fprintf(stderr, "Bye...\n");
-			break;
-		}
+		/* Builtin commands */
+		if(builtinCmds(cmd) == 1) break;  // returns 1 on exit cmd
+		else continue;					  // else cmd is pwd or cd
 
 		/* Regular command */
 		sys(cmd);
