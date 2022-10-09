@@ -8,10 +8,10 @@
 #define TOKEN_MAX   32
 #define ARGS_MAX    16
 
-typedef struct CmdLine {
+typedef struct Cmd {
 	char *name;
 	char *args[TOKEN_MAX];
-} CmdLine;
+} Cmd;
 
 /* Parses text given in command line */
 void parse(CmdLine *cmd, char *cmdtxt) {
