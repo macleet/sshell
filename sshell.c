@@ -77,9 +77,9 @@ int main(void)
 			fprintf(stderr, "Bye...\n");
 			break;
 		}
-		else if (!strcmp(cmd_st->name, "pwd")) {
-			char cwd[CMDLINE_MAX] = getcwd(cwd, sizeof(cwd)); // CMDLINE_MAX correct use here? should there be another max macro
-			if(cwd != NULL) {
+		else if (!strcmp(cmd_st->args[0], "pwd")) {
+			char cwd[CMDLINE_MAX];
+			if(getcwd(cwd, sizeof(cwd)) != NULL) {
 				fprintf(stdout, "%s\n", cwd);
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK?
 			}
