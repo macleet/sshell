@@ -26,27 +26,6 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	return;
 }
 
-/* Built-in Commands: exit, pwd, cd */
-int builtinCmds(char *cmd) {
-	if (!strcmp(cmd, "exit")) {
-		fprintf(stderr, "Bye...\n");
-		return 1;
-	}
-	else {
-		char cwd[CMDLINE_MAX] = getcwd(cwd, sizeof(cwd));
-		if (!strcmp(cmd, "pwd")) {
-			if(cwd != NULL) {
-				fprintf(stdout, "%s\n", cwd);
-				fprintf(stderr, "+ completed '%s' [0]\n", cmd);
-			}
-		}
-		else if (!strcmp(cmd, "cd")) {
-			
-		}
-	}
-	return 0;
-}
-
 int sys(char* cmdtxt) {
 	pid_t pid;
 	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
@@ -96,10 +75,23 @@ int main(void)
 		char *nl = strchr(cmd, '\n');
 		if (nl) { *nl = '\0'; }
 
-		/* Builtin commands */
-		if(builtinCmds(cmd) == 1) break;  // returns 1 on exit cmd
-		else continue;					  // else cmd is pwd or cd
 
+		/* Builtin commands */
+		if (!strcmp(cmd_st->name, "exit")) {
+			fprintf(stderr, "Bye...\n");
+			break;
+		}
+		else if (!strcmp(cmd_st->name, "pwd")) {
+			char cwd[CMDLINE_MAX] = getcwd(cwd, sizeof(cwd)); // CMDLINE_MAX correct use here? should there be another max macro
+			if(cwd != NULL) {
+				fprintf(stdout, "%s\n", cwd);
+				fprintf(stderr, "+ completed '%s' [0]\n", cmd_txt); // hardcoded 0 successful return; is OK?
+			}
+		}
+		else if (!strcmp(cmd_st->name, "cd")) {
+			
+		}
+		
 		/* Regular commands */
 		sys(cmd);
 	}
