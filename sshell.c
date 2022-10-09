@@ -75,6 +75,7 @@ int main(void)
 		/* Builtin commands */
 		if (!strcmp(cmd_st->args[0], "exit")) {
 			fprintf(stderr, "Bye...\n");
+			free(cmd_st);
 			break;
 		}
 		else if (!strcmp(cmd_st->args[0], "pwd")) {
@@ -83,9 +84,11 @@ int main(void)
 				fprintf(stdout, "%s\n", cwd);
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK?
 			}
+			free(cmd_st);
 			continue;
 		}
 		else if (!strcmp(cmd_st->args[0], "cd")) {
+			free(cmd_st);
 			continue;
 		}
 
