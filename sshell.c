@@ -9,7 +9,7 @@
 #define ARGS_MAX    16
 
 typedef struct Cmd {
-	char *name;
+	char original_txt[CMDLINE_MAX];
 	char *args[TOKEN_MAX];
 } Cmd;
 
@@ -17,7 +17,6 @@ typedef struct Cmd {
 void parse(Cmd *cmd_st, char *cmd_txt) {
 	char *arg_buf = strtok(cmd_txt, " ");
 	for(int i = 0; arg_buf != NULL; i++) {
-		if(i == 0) { cmd_st->name = arg_buf; }
 		cmd_st->args[i] = arg_buf;
 		arg_buf = strtok(NULL, " ");
 	}
@@ -30,14 +29,14 @@ int sys(Cmd *cmd_st) {
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
-		execvp(cmd_st->name, cmd_st->args);
+		execvp(cmd_st->args[0], cmd_st->args);
 		perror("execvp");
 		exit(EXIT_FAILURE);
 	} else if (pid > 0) {
 		/* Parent */
 		int status;
 		waitpid(pid, &status, 0);
-		fprintf(stderr, "+ completed '%s' [%d]", cmd_st->args, WEXITSTATUS(status));
+		fprintf(stderr, "+ completed '%s' [%d]\n", cmd_st->original_txt, WEXITSTATUS(status));
 	} else {
 		perror("fork");
 		exit(EXIT_FAILURE);
@@ -70,10 +69,11 @@ int main(void)
 		if (nl) { *nl = '\0'; }
 
 		Cmd *cmd_st = malloc( sizeof(Cmd) + sizeof(char[ARGS_MAX][TOKEN_MAX]) );
+		strcpy(cmd_st->original_txt, cmd_txt);
 		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
 
 		/* Builtin commands */
-		if (!strcmp(cmd_st->name, "exit")) {
+		if (!strcmp(cmd_st->args[0], "exit")) {
 			fprintf(stderr, "Bye...\n");
 			break;
 		}
@@ -81,13 +81,12 @@ int main(void)
 			char cwd[CMDLINE_MAX] = getcwd(cwd, sizeof(cwd)); // CMDLINE_MAX correct use here? should there be another max macro
 			if(cwd != NULL) {
 				fprintf(stdout, "%s\n", cwd);
-				fprintf(stderr, "+ completed '%s' [0]\n", cmd_txt); // hardcoded 0 successful return; is OK?
+				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK?
 			}
 		}
-		else if (!strcmp(cmd_st->name, "cd")) {
-			
+		else if (!strcmp(cmd_st->args[0], "cd")) {
 		}
-		
+
 		/* Regular commands */
 		sys(cmd_st);
 
