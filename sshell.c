@@ -16,11 +16,11 @@ typedef struct Cmd {
 // struct
 
 /* Parses text given in command line */
-void parse(CmdLine *cmd, char *cmdtxt) {
-	char *arg_buf = strtok(cmdtxt, " ");
+void parse(Cmd *cmd_st, char *cmd_txt) {
+	char *arg_buf = strtok(cmd_txt, " ");
 	for(int i = 0; arg_buf != NULL; i++) {
-		if(i == 0) { cmd->name = arg_buf; }
-		cmd->args[i] = arg_buf;
+		if(i == 0) { cmd_st->name = arg_buf; }
+		cmd_st->args[i] = arg_buf;
 		arg_buf = strtok(NULL, " ");
 	}
 	return;
