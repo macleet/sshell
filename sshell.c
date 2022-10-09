@@ -26,28 +26,24 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	return;
 }
 
-int sys(char* cmdtxt) {
+int sys(Cmd *cmd_st) {
 	pid_t pid;
-	CmdLine *cmd = malloc( sizeof(CmdLine) + sizeof(char[16][32]) );
 
-	parse(cmd, cmdtxt);
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
-		execvp(cmd->name, cmd->args);
+		execvp(cmd_st->name, cmd_st->args);
 		perror("execvp");
 		exit(EXIT_FAILURE);
 	} else if (pid > 0) {
 		/* Parent */
 		int status;
 		waitpid(pid, &status, 0);
-		fprintf(stderr, "+ completed '%s' [%d]", cmdtxt, WEXITSTATUS(status));
-		// fprintf(stderr, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
+		fprintf(stderr, "+ completed '%s' [%d]", cmd_st->args, WEXITSTATUS(status));
 	} else {
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-	free(cmd);
 	return 0;
 }
 
