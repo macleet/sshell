@@ -53,7 +53,7 @@ int sys(char* cmdtxt) {
 
 int main(void)
 {
-    char cmd[CMDLINE_MAX];
+    char cmd_txt[CMDLINE_MAX];
 
 	while (1) {
 		/* Print prompt */
@@ -61,20 +61,22 @@ int main(void)
 		fflush(stdout);
 
 		/* Get command line */
-		if (fgets(cmd, CMDLINE_MAX, stdin) == NULL) {
+		if (fgets(cmd_txt, CMDLINE_MAX, stdin) == NULL) {
 			break;
 		}
 
 		/* Print command line if stdin is not provided by terminal */
 		if (!isatty(STDIN_FILENO)) {
-			printf("%s", cmd);
+			printf("%s", cmd_txt);
 			fflush(stdout);
 		}
 
 		/* Remove trailing newline from command line */
-		char *nl = strchr(cmd, '\n');
+		char *nl = strchr(cmd_txt, '\n');
 		if (nl) { *nl = '\0'; }
 
+		Cmd *cmd_st = malloc( sizeof(Cmd) + sizeof(char[ARGS_MAX][TOKEN_MAX]) );
+		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
 
 		/* Builtin commands */
 		if (!strcmp(cmd_st->name, "exit")) {
@@ -93,7 +95,9 @@ int main(void)
 		}
 		
 		/* Regular commands */
-		sys(cmd);
+		sys(cmd_st);
+
+		free(cmd_st);
 	}
 	return EXIT_SUCCESS;
 }
