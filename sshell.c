@@ -13,6 +13,8 @@ typedef struct Cmd {
 	char *args[TOKEN_MAX];
 } Cmd;
 
+// struct
+
 /* Parses text given in command line */
 void parse(CmdLine *cmd, char *cmdtxt) {
 	char *arg_buf = strtok(cmdtxt, " ");
