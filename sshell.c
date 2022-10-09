@@ -36,7 +36,7 @@ int sys(char* cmdtxt) {
 		/* Child */
 		execvp(cmd->name, cmd->args);
 		perror("execvp");
-		exit(1);
+		exit(EXIT_FAILURE);
 	} else if (pid > 0) {
 		/* Parent */
 		int status;
@@ -45,7 +45,7 @@ int sys(char* cmdtxt) {
 		// fprintf(stderr, "Return status value for '%s': %d\n", cmdtxt, WEXITSTATUS(status));
 	} else {
 		perror("fork");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	free(cmd);
 	return 0;
