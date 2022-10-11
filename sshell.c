@@ -19,15 +19,8 @@ char* CDfunction(char *second, char *prev_dir){
 	char* newDir; /*This will be new path*/
 	char* curDir = getcwd(cwd, sizeof(cwd));
 	
-	char* newPrev_dir = malloc(strlen(curDir) + 1);
+	char* newPrev_dir = malloc(strlen(curDir) + 1); /*Return PrevDir*/
 	strcpy(newPrev_dir, curDir); 
-	//printf("hi %s\n", newPrev_dir);
-	/*chdir("-");*/
-	//printf("hi %s\n", curDir);
-
-	//fprintf(stdout, "prevDir INSIDE CD , '%s'\n", prev_dir);
-
-
 	
 	if(opendir(second) == NULL){
 		return NULL;
@@ -72,11 +65,19 @@ char* CDfunction(char *second, char *prev_dir){
     	}   
 	}
 	
-   
-	//fprintf(stdout, "prevCD, '%s'\n", curDir);
 	return newPrev_dir;
 }
 
+void redirect(char* cmd, char* fileName, char* sign){
+	int fd;
+	if(!strcmp(sign, ">")){
+		fd = open(fileName, O_WRONLY | O_CREAT, 0644);
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+	}
+
+	return;
+}
 
 
 /* Parses text given in command line */
@@ -156,26 +157,20 @@ int main(void)
     	}
     	else if (!strcmp(cmd_st->args[0], "cd")) {
         	char* second = cmd_st->args[1];
-        	//fprintf(stdout, "prevDir before going in , '%s'\n", prev_dir);
-
         	char* new_dir = CDfunction(second, prev_dir);
 			
 			if(new_dir == NULL){
 				fprintf(stderr, "Error: cannot cd into directory\n");
 			}
 
-			//fprintf(stdout, "main, '%s'\n", new_dir);
 			strcpy(prev_dir, new_dir);
-			//fprintf(stdout, "prevDir is, '%s'\n", new_dir);
-			/*if(!strcmp(second, "..")){
-			printf("here, '%s'\n", second);
-			}*/
 			fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);   
 			free(new_dir);
 			free(cmd_st);
 			continue;
     	}
 
+	
 		/* Regular commands */
 		sys(cmd_st);
 
