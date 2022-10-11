@@ -20,6 +20,12 @@ void cmd_construct(Cmd *cmd_st) {
 	return;
 } 
 
+void cmd_destruct(Cmd *cmd_st) {
+	free(cmd_st->original_txt);
+	free(cmd_st->args);
+	return;	
+}
+
 /* Parses text given in command line */
 void parse(Cmd *cmd_st, char *cmd_txt) {
 	char *arg_buf = strtok(cmd_txt, " ");
@@ -86,6 +92,7 @@ int main(void)
 		/* Builtin commands */
 		if (!strcmp(cmd_st->args[0], "exit")) {
 			fprintf(stderr, "Bye...\n");
+			cmd_destruct(cmd_st);
 			free(cmd_st);
 			break;
 		}
@@ -95,6 +102,7 @@ int main(void)
 				fprintf(stdout, "%s\n", cwd);
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK?
 			}
+		 	cmd_destruct(cmd_st);
 			free(cmd_st);
 			continue;
 		}
@@ -117,6 +125,7 @@ int main(void)
 		/* Regular commands */
 		sys(cmd_st);
 
+		cmd_destruct(cmd_st);
 		free(cmd_st);
 	}
 	return EXIT_SUCCESS;
