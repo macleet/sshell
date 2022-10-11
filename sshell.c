@@ -9,8 +9,8 @@
 #define ARGS_MAX    16
 
 typedef struct Cmd {
-	char original_txt[CMDLINE_MAX];
-	char *args[TOKEN_MAX];
+	char *original_txt;
+	char **args;
 	int path_cnt;
 } Cmd;
 
