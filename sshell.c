@@ -13,6 +13,12 @@ typedef struct Cmd {
 	char *args[TOKEN_MAX];
 } Cmd;
 
+void cmd_construct(Cmd *cmd_st) {
+	cmd_st->original_txt = (char*) malloc(CMDLINE_MAX * sizeof(char));
+	cmd_st->args = malloc(sizeof(char[ARGS_MAX][TOKEN_MAX]));
+	return;
+} 
+
 /* Parses text given in command line */
 void parse(Cmd *cmd_st, char *cmd_txt) {
 	char *arg_buf = strtok(cmd_txt, " ");
@@ -68,7 +74,10 @@ int main(void)
 		char *nl = strchr(cmd_txt, '\n');
 		if (nl) { *nl = '\0'; }
 
-		Cmd *cmd_st = malloc( sizeof(Cmd) + sizeof(char[ARGS_MAX][TOKEN_MAX]) );
+		/* Allocate memory for Command struct that will contain needed and parsed data */
+		Cmd *cmd_st = malloc( sizeof(Cmd) );
+		cmd_construct(cmd_st);
+
 		strcpy(cmd_st->original_txt, cmd_txt);
 		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
 
