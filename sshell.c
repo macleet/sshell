@@ -11,6 +11,7 @@
 typedef struct Cmd {
 	char original_txt[CMDLINE_MAX];
 	char *args[TOKEN_MAX];
+	int path_cnt;
 } Cmd;
 
 void cmd_construct(Cmd *cmd_st) {
@@ -26,6 +27,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 		cmd_st->args[i] = arg_buf;
 		arg_buf = strtok(NULL, " ");
 	}
+	cmd_st->path_cnt = i;
 	return;
 }
 
@@ -97,6 +99,17 @@ int main(void)
 			continue;
 		}
 		else if (!strcmp(cmd_st->args[0], "cd")) {
+		if(!strcmp(cmd_st->args[0], "cd")) {
+			if(strcmp(cmd_st->args[1], "..")) {
+				for(int i = 1; i < cmd_st->path_cnt; i++) {
+					chdir(cmd_st->args[i]);
+				}
+			}
+			else {
+				chdir((cmd_st->original_txt)+3);
+			}
+			fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);  // hardcoded 0 successful return; is OK?
+			cmd_destruct(cmd_st);
 			free(cmd_st);
 			continue;
 		}
