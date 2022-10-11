@@ -96,7 +96,7 @@ int main(void)
 			free(cmd_st);
 			break;
 		}
-		else if (!strcmp(cmd_st->args[0], "pwd")) {
+		if (!strcmp(cmd_st->args[0], "pwd")) {
 			char cwd[CMDLINE_MAX];
 			if(getcwd(cwd, sizeof(cwd)) != NULL) {
 				fprintf(stdout, "%s\n", cwd);
@@ -106,7 +106,6 @@ int main(void)
 			free(cmd_st);
 			continue;
 		}
-		else if (!strcmp(cmd_st->args[0], "cd")) {
 		if(!strcmp(cmd_st->args[0], "cd")) {
 			if(strcmp(cmd_st->args[1], "..")) {
 				for(int i = 1; i < cmd_st->path_cnt; i++) {
