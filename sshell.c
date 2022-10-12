@@ -11,9 +11,13 @@
 #define ARGS_MAX    16
 
 typedef struct Cmd {
+	/* Parse-related members */
 	char *original_txt;
 	char **args;
-	int path_cnt;
+
+	/* Change directory */
+	int  path_cnt; // maybe not needed (check!)
+
 } Cmd;
 
 void cmd_construct(Cmd *cmd_st) {
