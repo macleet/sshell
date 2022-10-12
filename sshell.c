@@ -81,6 +81,11 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 
 int sys(Cmd *cmd_st) {
 	pid_t pid;
+	int fd = -1;
+	if(cmd_st->redir) {
+		fd = open(cmd_st->redir_filename, O_WRONLY | O_CREAT, 0644);
+		dup2(fd, STDOUT_FILENO);
+	}
 
 	pid = fork();
 	if (pid == 0) {
