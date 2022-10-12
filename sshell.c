@@ -150,13 +150,14 @@ int main(void)
 			continue;
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
+			int error = -1;
 			if(strcmp(cmd_st->args[1], "..")) {
 				for(int i = 1; i < cmd_st->path_cnt; i++) {
-					chdir(cmd_st->args[i]);
+					error = chdir(cmd_st->args[i]);
 				}
 			}
 			else {
-				chdir((cmd_st->original_txt)+3);
+				error = chdir((cmd_st->original_txt)+3);
 			}
 			fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);  // hardcoded 0 successful return; is OK?
 			cmd_destruct(cmd_st);
