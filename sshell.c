@@ -34,13 +34,48 @@ void cmd_destruct(Cmd *cmd_st) {
 
 /* Parses text given in command line */
 void parse(Cmd *cmd_st, char *cmd_txt) {
-	char *arg_buf = strtok(cmd_txt, " /");
-	int i;
-	for(i = 0; arg_buf != NULL; i++) {
-		cmd_st->args[i] = arg_buf;
-		arg_buf = strtok(NULL, " /");
+	char *arg_buf;
+
+	/* Redirection args */
+	if(strchr(cmd_txt, '>')) {
+		cmd_st->redir = true;
+
+		int txt_len = (int) strlen(cmd_txt);  // length of entire command line text
+		char *inst = strchr(cmd_txt, '>');  // inst holds the instruction to shell e.g. "> file.txt"
+		int inst_len = (int) strlen(inst);  // length of instruction to shell
+		int arg_len = txt_len - inst_len;  // length of actual arguments
+
+		/* Gets file name of file to which output is redirected */
+		arg_buf = strtok(inst, "> ");
+		while(arg_buf != NULL) {
+			cmd_st->redir_filename = arg_buf;
+			// strcpy(cmd_st->redir_filename, arg_buf);
+			arg_buf = strtok(NULL, "> ");
+		}
+		strcpy(cmd_txt+arg_len, "\0");
+		parse(cmd_st, cmd_txt);
+		return;
 	}
-	cmd_st->path_cnt = i;
+
+	/* Path args */
+	if(strstr(cmd_txt, "cd ")) {
+		int i;
+		arg_buf = strtok(cmd_txt, " /");
+		for(i = 0; arg_buf != NULL; i++) {
+			cmd_st->args[i] = arg_buf;
+			arg_buf = strtok(NULL, " /");
+		}
+		cmd_st->path_cnt = i;
+	}
+
+	/* General args */
+	arg_buf = strtok(cmd_txt, " ");
+	for(int i = 0; arg_buf != NULL; i++) {
+		cmd_st->args[i] = arg_buf;
+		// strcpy(cmd_st->args[i], arg_buf);
+		arg_buf = strtok(NULL, " ");
+	}
+
 	return;
 }
 
