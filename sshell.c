@@ -34,6 +34,7 @@ void cmd_construct(Cmd *cmd_st) {
 
 void cmd_destruct(Cmd *cmd_st) {
 	free(cmd_st->original_txt);
+	free(cmd_st->redir_filename);
 	free(cmd_st->args);
 	return;	
 }
