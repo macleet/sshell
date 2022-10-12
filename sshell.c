@@ -125,6 +125,7 @@ int main(void)
 		/* Regular commands */
 		sys(cmd_st);
 
+		/* Deallocate memory */
 		cmd_destruct(cmd_st);
 		free(cmd_st);
 	}
