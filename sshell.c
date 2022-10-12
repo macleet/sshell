@@ -128,8 +128,8 @@ int main(void)
 		Cmd *cmd_st = malloc( sizeof(Cmd) );
 		cmd_construct(cmd_st);
 
-		strcpy(cmd_st->original_txt, cmd_txt);
 		/* Parse phase */
+		strcpy(cmd_st->original_txt, cmd_txt);  // saving original command line text into original_txt member
 		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
 
 		/* Builtin commands */
