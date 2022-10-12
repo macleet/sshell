@@ -153,6 +153,7 @@ int main(void)
 		/* Builtin commands */
 		if (!strcmp(cmd_st->args[0], "exit")) {
 			fprintf(stderr, "Bye...\n");
+			fprintf(stderr, "+ completed 'exit' [0]");
 			cmd_destruct(cmd_st);
 			free(cmd_st);
 			break;
