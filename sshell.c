@@ -129,6 +129,7 @@ int main(void)
 		cmd_construct(cmd_st);
 
 		strcpy(cmd_st->original_txt, cmd_txt);
+		/* Parse phase */
 		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
 
 		/* Builtin commands */
