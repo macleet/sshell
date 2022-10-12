@@ -177,7 +177,14 @@ int main(void)
 			else {
 				error = chdir((cmd_st->original_txt)+3);
 			}
-			fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);  // hardcoded 0 successful return; is OK?
+
+			if(error == 0) {  // successful chdir
+				fprintf(stderr, "+ completed '%s' [%d]\n", cmd_st->original_txt, error);
+			} 
+			else {  // unsuccessful chdir
+
+			}
+
 			cmd_destruct(cmd_st);
 			free(cmd_st);
 			continue;
