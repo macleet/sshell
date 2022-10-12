@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <fcntl.h>
 
 #define CMDLINE_MAX 512
 #define TOKEN_MAX   32
@@ -35,7 +36,6 @@ char* CDfunction(char *second, char *prev_dir){
 	if(second == NULL){
 		second = getenv("HOME");
     	if(!chdir(second)){
-         
 			newDir = getcwd(cwd, sizeof(cwd));
 			fprintf(stdout, "%s\n", newDir);
     	}
@@ -55,16 +55,14 @@ char* CDfunction(char *second, char *prev_dir){
     	}   
 	}
 
-
+	/*Not working yet*/
 	if (!strcmp(second, "-")){
     	fprintf(stdout, "hello, '%s'\n", prev_dir);
-      
     	if(!chdir(prev_dir)){
         	newDir = getcwd(cwd, sizeof(cwd));
         	fprintf(stdout, "%s\n", newDir);
     	}   
 	}
-	
 	return newPrev_dir;
 }
 
@@ -75,7 +73,6 @@ void redirect(char* cmd, char* fileName, char* sign){
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
-
 	return;
 }
 
@@ -169,7 +166,7 @@ int main(void)
 			free(cmd_st);
 			continue;
     	}
-
+		
 	
 		/* Regular commands */
 		sys(cmd_st);
