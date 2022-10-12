@@ -26,14 +26,8 @@ char* CDfunction(char *second, char *prev_dir){
 	if(opendir(second) == NULL){
 		return NULL;
 	}
-	else{
-		if(!chdir(second)){
-			newDir = getcwd(cwd, sizeof(cwd));
-			fprintf(stdout, "%s\n", newDir);
-		}
-	}
 
-	if(second == NULL){
+	else if(second == NULL){
 		second = getenv("HOME");
     	if(!chdir(second)){
 			newDir = getcwd(cwd, sizeof(cwd));
@@ -41,14 +35,14 @@ char* CDfunction(char *second, char *prev_dir){
     	}
 	}
 	/*cd .. go to parent directory*/
-	if (!strcmp(second, "..")){
+	else if (!strcmp(second, "..")){
 		if(!chdir("..")){
     		newDir = getcwd(cwd, sizeof(cwd));
     		fprintf(stdout, "%s\n", newDir);
     	}   
 	}
 
-	if (!strcmp(second, "/")){
+	else if (!strcmp(second, "/")){
     	if(!chdir("/")){
         	newDir = getcwd(cwd, sizeof(cwd));
         	fprintf(stdout, "%s\n", newDir);
@@ -56,17 +50,26 @@ char* CDfunction(char *second, char *prev_dir){
 	}
 
 	/*Not working yet*/
-	if (!strcmp(second, "-")){
-    	fprintf(stdout, "hello, '%s'\n", prev_dir);
+	else if (!strcmp(second, "-")){
+    	/*fprintf(stdout, "hello, '%s'\n", prev_dir);*/
     	if(!chdir(prev_dir)){
         	newDir = getcwd(cwd, sizeof(cwd));
         	fprintf(stdout, "%s\n", newDir);
     	}   
 	}
+
+	else{
+		if(!chdir(second)){
+			newDir = getcwd(cwd, sizeof(cwd));
+			fprintf(stdout, "%s\n", newDir);
+		}
+	}
+
+
 	return newPrev_dir;
 }
 
-void redirect(char* cmd, char* fileName, char* sign){
+/*void redirect(char* cmd, char* fileName, char* sign){
 	int fd;
 	if(!strcmp(sign, ">")){
 		fd = open(fileName, O_WRONLY | O_CREAT, 0644);
@@ -74,7 +77,7 @@ void redirect(char* cmd, char* fileName, char* sign){
 		close(fd);
 	}
 	return;
-}
+}*/
 
 
 /* Parses text given in command line */
@@ -166,7 +169,7 @@ int main(void)
 			free(cmd_st);
 			continue;
     	}
-		
+
 	
 		/* Regular commands */
 		sys(cmd_st);
