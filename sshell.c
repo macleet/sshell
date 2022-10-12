@@ -55,8 +55,8 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 		/* Gets file name of file to which output is redirected */
 		arg_buf = strtok(inst, "> ");
 		while(arg_buf != NULL) {
-			cmd_st->redir_filename = arg_buf;
-			// strcpy(cmd_st->redir_filename, arg_buf);
+			// cmd_st->redir_filename = arg_buf;
+			strcpy(cmd_st->redir_filename, arg_buf);
 			arg_buf = strtok(NULL, "> ");
 		}
 		strcpy(cmd_txt+arg_len, "\0");
