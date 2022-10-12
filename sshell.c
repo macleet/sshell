@@ -18,6 +18,9 @@ typedef struct Cmd {
 	/* Change directory */
 	int  path_cnt; // maybe not needed (check!)
 
+	/* Output Redirection */
+	bool redir;
+	char *redir_filename;
 } Cmd;
 
 void cmd_construct(Cmd *cmd_st) {
