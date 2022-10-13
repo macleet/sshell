@@ -163,7 +163,9 @@ int main(void)
 
 		/* Remove trailing newline from command line */
 		char *nl = strchr(cmd_txt, '\n');
-		if (nl) { *nl = '\0'; }
+		if (nl) { 
+			*nl = '\0'; 
+		}
 
 		/* Allocate memory for Command struct that will contain needed and parsed data */
 		Cmd *cmd_st = malloc( sizeof(Cmd) );
