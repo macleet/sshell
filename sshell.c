@@ -116,14 +116,16 @@ bool parse_err_handle(Cmd *cmd_st) {
 int sys(Cmd *cmd_st) {
 	pid_t pid;
 	int fd = -1;
-	if(cmd_st->redir) {
-		fd = open(cmd_st->redir_filename, O_WRONLY | O_CREAT, 0644);
-		dup2(fd, STDOUT_FILENO);
-	}
 
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
+		if(cmd_st->redir) {
+			fd = open(cmd_st->redir_filename, O_WRONLY | O_TRUNC, 0644);
+			dup2(fd, STDOUT_FILENO);
+			fflush(stdout);
+			close(fd);
+		}
 		execvp(cmd_st->args[0], cmd_st->args);
 		perror("execvp");
 		exit(EXIT_FAILURE);
