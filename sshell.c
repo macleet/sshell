@@ -77,7 +77,6 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 			strcpy(cmd_st->args[i], arg_buf);
 			arg_buf = strtok(NULL, " /");
 		}
-		// cmd_st->path_cnt = i;
 	}
 
 	/* General case parsing */
