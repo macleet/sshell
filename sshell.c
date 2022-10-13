@@ -143,9 +143,9 @@ int sys(Cmd *cmd_st) {
 
 int main(void)
 {
-    char cmd_txt[CMDLINE_MAX];
-
 	while (1) {
+	    char *cmd_txt = calloc(CMDLINE_MAX , sizeof(char));
+
 		/* Print prompt */
 		printf("sshell$ ");
 		fflush(stdout);
