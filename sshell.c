@@ -82,7 +82,6 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	/* General args */
 	arg_buf = strtok(cmd_txt, " ");
 	for(int i = 0; arg_buf != NULL; i++) {
-		// strcpy(cmd_st->args[i], arg_buf);
 		cmd_st->arg_cnt++;
 
 		strcpy(cmd_st->args[i], arg_buf);
