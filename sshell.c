@@ -17,10 +17,11 @@ typedef struct Cmd {
 
 	/* Change directory */
 	int  path_cnt; // maybe not needed (check!)
+	int arg_cnt;
 
 	/* Output Redirection */
 	bool redir;
-	char *redir_filename;
+	char *redir_filename; 
 } Cmd;
 
 void cmd_construct(Cmd *cmd_st) {
@@ -29,12 +30,16 @@ void cmd_construct(Cmd *cmd_st) {
 	cmd_st->args = malloc(sizeof(char[ARGS_MAX][TOKEN_MAX])); 			// TODO casting
 	cmd_st->redir = false;
 	cmd_st->path_cnt = 0;
+	cmd_st->arg_cnt = 0;
 	return;
 } 
 
 void cmd_destruct(Cmd *cmd_st) {
 	free(cmd_st->original_txt);
 	free(cmd_st->redir_filename);
+	for(int i = 0; i < cmd_st->arg_cnt; i++) {
+		free(cmd_st->args[i]);
+	}
 	free(cmd_st->args);
 	return;	
 }
@@ -70,6 +75,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 		arg_buf = strtok(cmd_txt, " /");
 		for(i = 0; arg_buf != NULL; i++) {
 			cmd_st->args[i] = arg_buf;
+			cmd_st->arg_cnt++;
 			arg_buf = strtok(NULL, " /");
 		}
 		cmd_st->path_cnt = i;
@@ -80,6 +86,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	for(int i = 0; arg_buf != NULL; i++) {
 		cmd_st->args[i] = arg_buf;
 		// strcpy(cmd_st->args[i], arg_buf);
+		cmd_st->arg_cnt++;
 		arg_buf = strtok(NULL, " ");
 	}
 
