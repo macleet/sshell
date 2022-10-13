@@ -208,6 +208,7 @@ int main(void)
 			// +3 "skips" the "cd " and accesses from the beginning of path string
 			// e.g. "cd /home/jbond/supersecretfolder" --> "/home/jbond/supersecretfolder" 
 			error = chdir((cmd_st->original_txt)+3);
+			if(error == -1) not_found = true;
 
 			/* Error handling */
 			if(not_found) {
