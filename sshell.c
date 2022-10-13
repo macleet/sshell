@@ -197,6 +197,7 @@ int main(void)
 		 	cmd_destruct(cmd_st);
 			free(cmd_st);
 			free(cmd_txt);
+			free(cwd);
 			continue;
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
