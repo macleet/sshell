@@ -192,7 +192,10 @@ int main(void)
 
 			if(getcwd(cwd, CMDLINE_MAX * sizeof(char)) != NULL) {
 				fprintf(stdout, "%s\n", cwd);
-				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK? NO
+				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);
+			} 
+			else {
+				fprintf(stderr, "+ completed '%s' [1]\n", cmd_st->original_txt);
 			}
 
 		 	cmd_destruct(cmd_st);
