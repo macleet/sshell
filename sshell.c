@@ -72,8 +72,8 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 		int i;
 		arg_buf = strtok(cmd_txt, " /");
 		for(i = 0; arg_buf != NULL; i++) {
-			cmd_st->args[i] = arg_buf;
 			cmd_st->arg_cnt++;
+			strcpy(cmd_st->args[i], arg_buf);
 			arg_buf = strtok(NULL, " /");
 		}
 		// cmd_st->path_cnt = i;
