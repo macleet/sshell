@@ -188,9 +188,9 @@ int main(void)
 			break;
 		}
 		if (!strcmp(cmd_st->args[0], "pwd")) {
-			if(getcwd(cwd, sizeof(cwd)) != NULL) {
 			char *cwd = calloc(CMDLINE_MAX , sizeof(char));
 
+			if(getcwd(cwd, CMDLINE_MAX * sizeof(char)) != NULL) {
 				fprintf(stdout, "%s\n", cwd);
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK? NO
 			}
