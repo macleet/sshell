@@ -121,7 +121,7 @@ int sys(Cmd *cmd_st) {
 	if (pid == 0) {
 		/* Child */
 		if(cmd_st->redir) {
-			fd = open(cmd_st->redir_filename, O_WRONLY | O_TRUNC, 0644);
+			fd = open(cmd_st->redir_filename, O_WRONLY | O_TRUNC | O_CREAT , 0644);
 			dup2(fd, STDOUT_FILENO);
 			fflush(stdout);
 			close(fd);
