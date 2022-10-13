@@ -14,9 +14,6 @@ typedef struct Cmd {
 	/* Parse-related members */
 	char *original_txt;
 	char **args;
-
-	/* Change directory */
-	int  path_cnt; // maybe not needed (check!)
 	int arg_cnt;
 
 	/* Output Redirection */
@@ -29,7 +26,6 @@ void cmd_construct(Cmd *cmd_st) {
 	cmd_st->redir_filename = (char*) malloc(FILENAME_MAX * sizeof(char));
 	cmd_st->args = malloc(sizeof(char[ARGS_MAX][TOKEN_MAX])); 			// TODO casting
 	cmd_st->redir = false;
-	cmd_st->path_cnt = 0;
 	cmd_st->arg_cnt = 0;
 	return;
 } 
@@ -78,7 +74,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 			cmd_st->arg_cnt++;
 			arg_buf = strtok(NULL, " /");
 		}
-		cmd_st->path_cnt = i;
+		// cmd_st->path_cnt = i;
 	}
 
 	/* General args */
@@ -178,9 +174,6 @@ int main(void)
 		if(!strcmp(cmd_st->args[0], "cd")) {
 			int error = -1;
 			if(strcmp(cmd_st->args[1], "..")) {
-				for(int i = 1; i < cmd_st->path_cnt; i++) {
-					error = chdir(cmd_st->args[i]);
-				}
 			}
 			else {
 				error = chdir((cmd_st->original_txt)+3);
