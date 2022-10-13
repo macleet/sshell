@@ -138,12 +138,6 @@ int sys(Cmd *cmd_st) {
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-
-	if(cmd_st->redir) {
-		dup2(STDERR_FILENO, STDOUT_FILENO);
-		close(fd);
-	}
-
 	return 0;
 }
 
