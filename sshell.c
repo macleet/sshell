@@ -24,7 +24,7 @@ typedef struct Cmd {
 void cmd_construct(Cmd *cmd_st) {
 	cmd_st->original_txt = (char*) malloc(CMDLINE_MAX * sizeof(char));
 	cmd_st->redir_filename = (char*) malloc(FILENAME_MAX * sizeof(char));
-	cmd_st->args = malloc(sizeof(char[ARGS_MAX][TOKEN_MAX])); 			// TODO casting
+	cmd_st->args = (char**) calloc(ARGS_MAX , sizeof(char*));
 	cmd_st->redir = false;
 	cmd_st->arg_cnt = 0;
 	return;
