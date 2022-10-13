@@ -82,6 +82,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	/* General case parsing */
 	arg_buf = strtok(cmd_txt, " ");
 	for(int i = 0; arg_buf != NULL; i++) {
+		cmd_st->args[i] = calloc(TOKEN_MAX , sizeof(char));
 		cmd_st->arg_cnt++;
 
 		strcpy(cmd_st->args[i], arg_buf);
