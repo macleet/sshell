@@ -194,6 +194,7 @@ int main(void)
 				fprintf(stdout, "%s\n", cwd);
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt); // hardcoded 0 successful return; is OK? NO
 			}
+
 		 	cmd_destruct(cmd_st);
 			free(cmd_st);
 			free(cmd_txt);
