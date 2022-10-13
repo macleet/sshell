@@ -195,6 +195,7 @@ int main(void)
 			}
 		 	cmd_destruct(cmd_st);
 			free(cmd_st);
+			free(cmd_txt);
 			continue;
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
@@ -213,6 +214,7 @@ int main(void)
 			}
 
 			cmd_destruct(cmd_st);
+			free(cmd_txt);
 			free(cmd_st);
 			continue;
 		}
@@ -222,6 +224,7 @@ int main(void)
 
 		/* Deallocate memory */
 		cmd_destruct(cmd_st);
+		free(cmd_txt);
 		free(cmd_st);
 	}
 	return EXIT_SUCCESS;
