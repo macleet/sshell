@@ -203,11 +203,6 @@ int main(void)
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
 			int error = -1;
-			if(strcmp(cmd_st->args[1], "..")) {
-			}
-			else {
-				error = chdir((cmd_st->original_txt)+3);
-			}
 
 			if(error == 0) {  // successful chdir
 				fprintf(stderr, "+ completed '%s' [%d]\n", cmd_st->original_txt, error);
