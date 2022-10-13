@@ -44,7 +44,7 @@ void cmd_destruct(Cmd *cmd_st) {
 void parse(Cmd *cmd_st, char *cmd_txt) {
 	char *arg_buf;
 
-	/* Redirection args */
+	/* Redirection parsing */
 	if(strchr(cmd_txt, '>')) {
 		cmd_st->redir = true;
 
