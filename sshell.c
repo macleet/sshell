@@ -204,11 +204,16 @@ int main(void)
 		if(!strcmp(cmd_st->args[0], "cd")) {
 			int error = -1;
 
-			if(error == 0) {  // successful chdir
-				fprintf(stderr, "+ completed '%s' [%d]\n", cmd_st->original_txt, error);
-			} 
-			else {  // unsuccessful chdir
 
+			/* Error handling */
+			if(not_found) {
+				perror("Error: cannot cd into directory\n");
+			}
+			if(error == 0) {
+				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);
+			} 
+			else {
+				fprintf(stderr, "+ completed '%s' [1]\n", cmd_st->original_txt);
 			}
 
 			cmd_destruct(cmd_st);
