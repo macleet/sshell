@@ -203,6 +203,7 @@ int main(void)
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
 			int error = -1;
+			bool not_found = false;
 
 
 			/* Error handling */
