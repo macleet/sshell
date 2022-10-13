@@ -93,6 +93,26 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	return;
 }
 
+bool parse_err_handle(Cmd *cmd_st) {
+	if(!strcmp(cmd_st->args[0], ">") || !strcmp(cmd_st->args[0], "|")) {
+		/* Missing command */
+		perror("Error: missing command\n");
+		return true;
+	}
+	else if(cmd_st->arg_cnt > ARGS_MAX) {
+		/* Exceed max number of args */
+		perror("Error: too many process arguments\n");
+		return true;
+	}
+	// else if() {
+	// 	/* No output file */
+	// }
+	// else if() {
+	// 	/* Mislocated output redirection */
+	// }
+	return false;
+}
+
 int sys(Cmd *cmd_st) {
 	pid_t pid;
 	int fd = -1;
@@ -156,6 +176,8 @@ int main(void)
 		/* Parse phase */
 		strcpy(cmd_st->original_txt, cmd_txt);  // saving original command line text into original_txt member
 		parse(cmd_st, cmd_txt);   // stores parsed value in struct cmd_st
+		if(cmd_st->args[0] == NULL) continue;
+		if(parse_err_handle(cmd_st)) continue;
 
 		/* Builtin commands */
 		if (!strcmp(cmd_st->args[0], "exit")) {
