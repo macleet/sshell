@@ -47,11 +47,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 	/* Redirection parsing */
 	if(strchr(cmd_txt, '>')) {
 		cmd_st->redir = true;
-
-		int txt_len = (int) strlen(cmd_txt);  // length of entire command line text
 		char *inst = strchr(cmd_txt, '>');  // inst holds the instruction to shell e.g. "> file.txt"
-		int inst_len = (int) strlen(inst);  // length of instruction to shell
-		int arg_len = txt_len - inst_len;  // length of actual arguments
 
 		/* Gets file name of file to which output is redirected */
 		arg_buf = strtok(inst, "> ");
@@ -60,7 +56,14 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 			strcpy(cmd_st->redir_filename, arg_buf);
 			arg_buf = strtok(NULL, "> ");
 		}
-		strcpy(cmd_txt+arg_len, "\0");
+
+		/* Extract only arguments from cmd_txt */
+		for(int i = 0; i < (int) strlen(cmd_txt); i++) {
+			if(cmd_txt[i] == '>') {
+				cmd_txt[i] = '\0';
+				break;
+			}
+		}
 		parse(cmd_st, cmd_txt);
 		return;
 	}
