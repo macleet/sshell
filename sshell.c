@@ -183,6 +183,7 @@ int main(void)
 			fprintf(stderr, "+ completed 'exit' [0]\n");
 
 			cmd_destruct(cmd_st);
+			free(cmd_txt);
 			free(cmd_st);
 			break;
 		}
