@@ -67,7 +67,7 @@ void parse(Cmd *cmd_st, char *cmd_txt) {
 		return;
 	}
 
-	/* Path args */
+	/* Path parsing */
 	if(strstr(cmd_txt, "cd ")) {
 		int i;
 		arg_buf = strtok(cmd_txt, " /");
