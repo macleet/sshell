@@ -7,8 +7,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-// TO DO: free location change, cmd destruct to be in for loop
-
 #define CMDLINE_MAX  512
 #define TOKEN_MAX    32
 #define ARGS_MAX     16
@@ -322,6 +320,7 @@ int main(void) {
 			*nl = '\0'; 
 		}
 		
+		// 
 		CmdStorage *cmd_storage = malloc(sizeof(CmdStorage));
 		cmd_storage->cmd_cnt = 1; // 1 bc always at least 1 command at this point
 		cmd_storage->cmd_cnt += getPipeCnt(cmd_txt);  // cmd_cnt essentially used to check if commands are pipelined 
@@ -353,7 +352,19 @@ int main(void) {
 		if(cmd_storage->cmd_cnt > 1) {
 			pipeline(cmd_storage);
 			
-			// Deallocate HERE!!
+			// Deallocate memory before continue
+			if(cmd_storage->cmd_cnt > 1) {	// if multiple commands due to piping
+				for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+					cmd_destruct(cmd_storage->cmd_arr[i]);
+				}
+			}
+			else {
+				cmd_destruct(cmd_storage->cmd_arr[0]);
+			}
+			free(cmd_txt);
+			free(cmd_st);
+			free(cmd_storage->cmd_arr);
+			free(cmd_storage);
 			continue;
 		}
 
@@ -364,7 +375,14 @@ int main(void) {
 			fprintf(stderr, "+ completed 'exit' [0]\n");
 
 			// Deallocate memory before break
-			cmd_destruct(cmd_st);
+			if(cmd_storage->cmd_cnt > 1) {	// if multiple commands due to piping
+				for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+					cmd_destruct(cmd_storage->cmd_arr[i]);
+				}
+			}
+			else {
+				cmd_destruct(cmd_storage->cmd_arr[0]);
+			}
 			free(cmd_txt);
 			free(cmd_st);
 			free(cmd_storage->cmd_arr);
@@ -383,7 +401,14 @@ int main(void) {
 			}
 
 			// Deallocate memory before continue
-		 	cmd_destruct(cmd_st);
+			if(cmd_storage->cmd_cnt > 1) {	// if multiple commands due to piping
+				for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+					cmd_destruct(cmd_storage->cmd_arr[i]);
+				}
+			}
+			else {
+				cmd_destruct(cmd_storage->cmd_arr[0]);
+			}
 			free(cmd_st);
 			free(cmd_txt);
 			free(cwd);
@@ -413,7 +438,14 @@ int main(void) {
 			}
 
 			// Deallocate memory before continue
-			cmd_destruct(cmd_st);
+			if(cmd_storage->cmd_cnt > 1) {	// if multiple commands due to piping
+				for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+					cmd_destruct(cmd_storage->cmd_arr[i]);
+				}
+			}
+			else {
+				cmd_destruct(cmd_storage->cmd_arr[0]);
+			}
 			free(cmd_txt);
 			free(cmd_st);
 			free(cmd_storage->cmd_arr);
@@ -425,7 +457,14 @@ int main(void) {
 		sys(cmd_st);
 
 		/* Deallocate memory */
-		cmd_destruct(cmd_st);
+		if(cmd_storage->cmd_cnt > 1) {	// if multiple commands due to piping
+			for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+				cmd_destruct(cmd_storage->cmd_arr[i]);
+			}
+		}
+		else {
+			cmd_destruct(cmd_storage->cmd_arr[0]);
+		}
 		free(cmd_txt);
 		free(cmd_st);
 		free(cmd_storage->cmd_arr);
