@@ -206,8 +206,10 @@ void pipeline(CmdStorage *cmd_storage) {
     fd_arr[1] = fd2;
     fd_arr[2] = fd3;
 
-    for(int i = 0; i < cmd_storage->pipe_cnt; i++){ 
-        pipe(fd_arr[i]);  // pipe twice, if there are two pipes
+	int error = -1;
+    for(int i = 0; i < cmd_storage->pipe_cnt; i++) { 
+        error = pipe(fd_arr[i]);  // pipe twice, if there are two pipes
+		if(error == -1) perror("pipe");
     }
 
 	pid1 = fork();
