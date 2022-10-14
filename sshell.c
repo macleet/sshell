@@ -11,6 +11,7 @@
 #define TOKEN_MAX    32
 #define ARGS_MAX     16
 #define PIPE_CMD_MAX 4
+#define PIPE_CNT_MAX 3
 
 typedef struct Cmd {
 	/* Parse-related members */
@@ -162,31 +163,37 @@ void parse(Cmd **cmd_arr, char *cmd_txt) {
 	return;
 }
 
-bool parse_err_handle(Cmd **cmd_arr, int cmd_cnt) {
+bool parse_err_handle(CmdStorage *cmd_storage) {
+	Cmd **cmd_arr = cmd_storage->cmd_arr;
+	int cmd_cnt = cmd_storage->cmd_cnt;
+
 	for(int i = 0; i < cmd_cnt; i++) {
-		if(!strcmp(cmd_arr[i]->args[0], ">") || !strcmp(cmd_arr[i]->args[0], "|")) {
+		if( (cmd_arr[0]->original_txt[0] == '>') || (cmd_arr[0]->original_txt[0] == '|') ) {
 			/* Missing command */
-			perror("Error: missing command\n");
+			fprintf(stderr, "Error: missing command\n");
 			return true;
 		}
-		else if(cmd_arr[i]->arg_cnt > ARGS_MAX) {
+		if(cmd_arr[i]->arg_cnt > ARGS_MAX) {
 			/* Exceed max number of args */
-			perror("Error: too many process arguments\n");
+			fprintf(stderr, "Error: too many process arguments\n");
 			return true;
 		}
-		// else if() {
+		// if(!strcmp(cmd_arr[i]->redir_filename, "")) {
 		// 	/* No output file */
+		// 	fprintf(stderr, "Error: no output file\n");
+		// 	return true;
 		// }
-		// else if() {
+		// if() {
 		// 	/* Mislocated output redirection */
+			// return true;
 		// }
 	}
 	return false;
 }
 
-int sys(Cmd *cmd_st) {
+void sys(Cmd *cmd_st) {
 	pid_t pid;
-	int fd = -1;
+	int fd = -2;
 
 	pid = fork();
 	if (pid == 0) {
@@ -203,6 +210,10 @@ int sys(Cmd *cmd_st) {
 			fflush(stdin);
 			close(fd);
 		}
+		if(fd == -1) {
+			fprintf(stderr, "Error: cannot open output file\n");
+			return;
+		}
 		execvp(cmd_st->args[0], cmd_st->args);
 		perror("execvp");
 		exit(EXIT_FAILURE);
@@ -215,27 +226,23 @@ int sys(Cmd *cmd_st) {
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-	return 0;
+	return;
 }
 
 void pipeline(CmdStorage *cmd_storage) {
 	Cmd **cmd_arr = cmd_storage->cmd_arr;
 	Cmd *first_cmd = cmd_arr[0];
 
-    int status[4];
-    static int exitstatus[4];
-    int* fd_arr[3];  // need three fd when there are 3 pipes
+    int status[PIPE_CMD_MAX];
+    static int exitstatus[PIPE_CMD_MAX];
 
-    pid_t pid1;  // basic pid for single pipe
-    pid_t pid2;  // pid2 reused in the for loop below, no need to make more pids
+    pid_t pid1;
+    pid_t pid2;
 
-    int fd[2]; 
-    int fd2[2];
-    int fd3[2];
- 
-    fd_arr[0] = fd;  // keep fds in fd array to access inside the loop
-    fd_arr[1] = fd2;
-    fd_arr[2] = fd3;
+	int **fd_arr = calloc(cmd_storage->pipe_cnt, sizeof(int*)); 
+	for(int i = 0; i < cmd_storage->pipe_cnt; i++) {
+		fd_arr[i] = calloc(2, sizeof(int));
+	}
 
 	int error = -1;
     for(int i = 0; i < cmd_storage->pipe_cnt; i++) { 
@@ -246,7 +253,7 @@ void pipeline(CmdStorage *cmd_storage) {
 	pid1 = fork();
     if(pid1 == 0){ 
 		/* child */
-        close(fd_arr[0][0]);  // fd_arr[0] is fd1
+        close(fd_arr[0][0]);
 		dup2(fd_arr[0][1], STDOUT_FILENO);
 		close(fd_arr[0][1]);
 		execvp(first_cmd->args[0], first_cmd->args);
@@ -283,7 +290,13 @@ void pipeline(CmdStorage *cmd_storage) {
             exit(EXIT_FAILURE);
         }
     }
-	fprintf(stderr, "+ completed '%s' [%d][%d][%d]\n", first_cmd->original_txt, exitstatus[0], exitstatus[1], exitstatus[2]);
+
+	fprintf(stderr, "+ completed '%s' ", first_cmd->original_txt);
+	for(int i = 0; i < cmd_storage->cmd_cnt; i++) {
+		fprintf(stderr, "[%d]", exitstatus[i]);
+	}
+	fprintf(stderr, "\n");
+
 	return;	
 }
 
@@ -345,8 +358,8 @@ int main(void) {
 		/* Parse phase */
 		strcpy(cmd_st->original_txt, cmd_txt);  // saving original command line text into original_txt member as it is lost while parsing
 		parse(cmd_storage->cmd_arr, cmd_txt);  // parsed values --> cmd_storage
+		if(parse_err_handle(cmd_storage)) continue;
 		if(cmd_st->args[0] == NULL) continue;
-		if(parse_err_handle(cmd_storage->cmd_arr, cmd_storage->cmd_cnt)) continue;
 
 		/* Pipelined commands */
 		if(cmd_storage->cmd_cnt > 1) {
@@ -428,7 +441,7 @@ int main(void) {
 
 			/* Error handling */
 			if(not_found) {
-				perror("Error: cannot cd into directory\n");
+				fprintf(stderr, "Error: cannot cd into directory\n");
 			}
 			if(error == 0) {
 				fprintf(stderr, "+ completed '%s' [0]\n", cmd_st->original_txt);
