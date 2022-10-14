@@ -7,9 +7,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define CMDLINE_MAX  512
-#define TOKEN_MAX    32
-#define ARGS_MAX     16
+#define CMDLINE_MAX 512
+#define STACK_MAX 100
+#define TOKEN_MAX 32
+#define ARGS_MAX 16
 #define PIPE_CMD_MAX 4
 #define PIPE_CNT_MAX 3
 
@@ -24,6 +25,49 @@ typedef struct Cmd {
 	bool i_redir;
 	char *redir_filename; 
 } Cmd;
+
+typedef struct DirStack {
+	int top;
+	int dir_cnt;
+	char** dir_arr;
+} DirStack;
+
+void pushd(DirStack *dstack, char *dirname) {
+	int chdir_err = -1;
+	chdir_err = chdir(dirname);
+	if(chdir_err == -1) {
+		fprintf(stderr, "Error: no such directory\n");
+		return;
+	}
+
+	char cwd[CMDLINE_MAX];
+	char *cwd_err = NULL;
+	cwd_err = getcwd(cwd, CMDLINE_MAX * sizeof(char));
+	if(cwd_err == NULL) { 
+		fprintf(stderr, "Error: no such directory\n");
+		return;
+	}
+
+	dstack->top++;
+	dstack->dir_cnt++; 
+	strcpy(dstack->dir_arr[dstack->top], cwd);
+
+	return;
+}
+
+void popd(DirStack *dstack) {
+	dstack->dir_cnt--;
+	dstack->top--;
+	return;
+}
+
+void dirs(DirStack *dstack) {
+	for(int i = dstack->dir_cnt-1; i >= 0; i--) {
+		fprintf(stdout, "%s\n", dstack->dir_arr[i]);
+	}
+	fprintf(stdout, "\n");
+	return;
+}
 
 typedef struct CmdStorage
 {
@@ -314,6 +358,14 @@ int getPipeCnt(char* cmd_txt) {
 }
 
 int main(void) {
+	DirStack *dstack = malloc( sizeof(DirStack) );
+	dstack->top = -1;
+	dstack->dir_cnt = 0;
+	dstack->dir_arr = malloc(STACK_MAX * sizeof(char*));
+	for(int i = 0; i < STACK_MAX; i++) {
+		dstack->dir_arr[i] = calloc(CMDLINE_MAX, sizeof(char));
+	}
+
 	while (1) {
 	    char *cmd_txt = calloc(CMDLINE_MAX , sizeof(char));
 
@@ -338,7 +390,6 @@ int main(void) {
 			*nl = '\0'; 
 		}
 		
-		// 
 		CmdStorage *cmd_storage = malloc(sizeof(CmdStorage));
 		cmd_storage->cmd_cnt = 1; // 1 bc always at least 1 command at this point
 		cmd_storage->cmd_cnt += getPipeCnt(cmd_txt);  // cmd_cnt essentially used to check if commands are pipelined 
@@ -443,6 +494,17 @@ int main(void) {
 			free(cwd);
 			free(cmd_storage->cmd_arr);
 			free(cmd_storage);
+			continue;
+		}
+		if(!strcmp(cmd_st->args[0], "pushd")) {
+			pushd(dstack, cmd_st->args[1]);
+			printf("%s\n", dstack->dir_arr[0]);
+			continue;
+		}
+		if(!strcmp(cmd_st->args[0], "popd")) {
+			continue;
+		}
+		if(!strcmp(cmd_st->args[0], "dirs")) {
 			continue;
 		}
 		if(!strcmp(cmd_st->args[0], "cd")) {
