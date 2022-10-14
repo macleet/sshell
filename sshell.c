@@ -211,6 +211,10 @@ void sys(Cmd *cmd_st) {
 			close(fd);
 		}
 		if(fd == -1) {
+			if(!strcmp(cmd_st->redir_filename, "")) {
+				fprintf(stderr, "Error: no output file\n"); 
+				return;
+			}
 			fprintf(stderr, "Error: cannot open output file\n");
 			return;
 		}
@@ -230,6 +234,7 @@ void sys(Cmd *cmd_st) {
 }
 
 void pipeline(CmdStorage *cmd_storage) {
+
 	Cmd **cmd_arr = cmd_storage->cmd_arr;
 	Cmd *first_cmd = cmd_arr[0];
 
@@ -380,6 +385,17 @@ int main(void) {
 			free(cmd_storage);
 			continue;
 		}
+		// else if( (cmd_storage->pipe_cnt == 1) && (cmd_storage->cmd_arr[1] == NULL) ) {
+		// 	fprintf(stderr, "Error: missing command\n");
+
+		// 	// Deallocate memory before continue
+		// 	cmd_destruct(cmd_storage->cmd_arr[0]);
+		// 	free(cmd_txt);
+		// 	free(cmd_st);
+		// 	free(cmd_storage->cmd_arr);
+		// 	free(cmd_storage);
+		// 	continue;
+		// }
 
 		/* Builtin commands */
 		// Buitin commands never run with pipe
