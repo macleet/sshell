@@ -21,7 +21,8 @@ typedef struct Cmd {
 	int arg_cnt;
 
 	/* Output Redirection */
-	bool redir;
+	bool o_redir;
+	bool i_redir;
 	char *redir_filename; 
 } Cmd;
 
@@ -36,7 +37,8 @@ void cmd_construct(Cmd *cmd_st) {
 	cmd_st->original_txt = (char*) malloc(CMDLINE_MAX * sizeof(char));
 	cmd_st->redir_filename = (char*) malloc(FILENAME_MAX * sizeof(char));
 	cmd_st->args = (char**) calloc(ARGS_MAX , sizeof(char*));
-	cmd_st->redir = false;
+	cmd_st->o_redir = false;
+	cmd_st->i_redir = false;
 	cmd_st->arg_cnt = 0;
 	return;
 } 
@@ -85,10 +87,11 @@ void parse(Cmd **cmd_arr, char *cmd_txt) {
 	/*** Non-pipeline parsing ***/
 	Cmd *cmd_st = cmd_arr[0];
 
-	/* Redirection parsing */
+	/* Output redirection parsing */
+	char *inst;
 	if(strchr(cmd_txt, '>')) {
-		cmd_st->redir = true;
-		char *inst = strchr(cmd_txt, '>');  // inst holds the instruction to shell e.g. "> file.txt"
+		cmd_st->o_redir = true;
+		inst = strchr(cmd_txt, '>');  // inst holds the instruction to shell e.g. "> file.txt"
 
 		/* Gets file name of file to which output is redirected */
 		arg_buf = strtok(inst, "> ");
@@ -101,6 +104,30 @@ void parse(Cmd **cmd_arr, char *cmd_txt) {
 		for(int i = 0; i < (int) strlen(cmd_txt); i++) {
 			// Replaces > with null character --> cmd_txt = string of entire command w/o >
 			if(cmd_txt[i] == '>') {
+				cmd_txt[i] = '\0';
+				break;
+			}
+		}
+
+		parse(cmd_arr, cmd_txt);
+		return;
+	}
+	/* Input redirection parsing */
+	else if(strchr(cmd_txt, '<')) {
+		cmd_st->i_redir = true;
+		inst = strchr(cmd_txt, '<');  // inst holds the instruction to shell e.g. "< file.txt"
+
+		/* Gets file name of file from which input is redirected */
+		arg_buf = strtok(inst, "< ");
+		while(arg_buf != NULL) {
+			strcpy(cmd_st->redir_filename, arg_buf);
+			arg_buf = strtok(NULL, "< ");
+		}
+
+		/* Extract only arguments from cmd_txt */
+		for(int i = 0; i < (int) strlen(cmd_txt); i++) {
+			// Replaces > with null character --> cmd_txt = string of entire command w/o <
+			if(cmd_txt[i] == '<') {
 				cmd_txt[i] = '\0';
 				break;
 			}
@@ -166,10 +193,16 @@ int sys(Cmd *cmd_st) {
 	pid = fork();
 	if (pid == 0) {
 		/* Child */
-		if(cmd_st->redir) {
+		if(cmd_st->o_redir) {
 			fd = open(cmd_st->redir_filename, O_WRONLY | O_TRUNC | O_CREAT , 0644);
 			dup2(fd, STDOUT_FILENO);
 			fflush(stdout);
+			close(fd);
+		}
+		else if(cmd_st->i_redir) {
+			fd = open(cmd_st->redir_filename, O_RDONLY , 444);
+			dup2(fd, STDIN_FILENO);
+			fflush(stdin);
 			close(fd);
 		}
 		execvp(cmd_st->args[0], cmd_st->args);
@@ -365,6 +398,7 @@ int main(void) {
 			// +3 "skips" the "cd " and accesses from the beginning of path string
 			// e.g. "cd /home/jbond/supersecretfolder" --> "/home/jbond/supersecretfolder" 
 			error = chdir((cmd_st->original_txt)+3);
+			if(cmd_st->args[1] == NULL) error = chdir("/");  // root dir with just "cd"
 			if(error == -1) not_found = true;
 
 			/* Error handling */
