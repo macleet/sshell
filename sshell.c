@@ -237,6 +237,8 @@ int main(void)
 		cmd_destruct(cmd_st);
 		free(cmd_txt);
 		free(cmd_st);
+		free(cmd_storage->cmd_arr);
+		free(cmd_storage);
 	}
 	return EXIT_SUCCESS;
 }
